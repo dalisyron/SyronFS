@@ -2,7 +2,6 @@ package file;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 
 public class FileHandler {
 
@@ -87,6 +86,33 @@ public class FileHandler {
             String trimmedLine = currentLine.trim();
             if (recordValidator.validate(trimmedLine, key) && !foundRecord) {
                 foundRecord = true;
+                continue;
+            }
+            writer.write(currentLine + System.getProperty("line.separator"));
+        }
+
+        writer.close();
+        reader.close();
+        boolean successful = tempFile.renameTo(file);
+
+        return successful && foundRecord;
+    }
+
+    // UPDATE
+    public boolean updateLine(String key, String newRecord, RecordValidator recordValidator) throws IOException {
+        File tempFile = new File("tempFile.txt");
+        boolean foundRecord = false;
+
+        BufferedReader reader = retrieveBufferedReader();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String currentLine;
+
+        while((currentLine = reader.readLine()) != null) {
+            String trimmedLine = currentLine.trim();
+            if (recordValidator.validate(trimmedLine, key) && !foundRecord) {
+                foundRecord = true;
+                writer.write(newRecord + System.getProperty("line.separator"));
                 continue;
             }
             writer.write(currentLine + System.getProperty("line.separator"));
