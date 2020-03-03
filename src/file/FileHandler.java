@@ -48,7 +48,7 @@ public class FileHandler {
     }
 
     // FIND
-    public String findLine(String key, RecordValidator recordValidator) throws IOException {
+    public String findLine(String key, LineValidator lineValidator) throws IOException {
         BufferedReader reader = retrieveBufferedReader();
 
         if (reader == null) {
@@ -64,7 +64,7 @@ public class FileHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (recordValidator.validate(line, key)) {
+            if (lineValidator.validate(line, key)) {
                 return line;
             }
         }
@@ -74,7 +74,7 @@ public class FileHandler {
     }
 
     // DELETE
-    public boolean deleteLine(String key, RecordValidator recordValidator) throws IOException {
+    public boolean deleteLine(String key, LineValidator lineValidator) throws IOException {
         File tempFile = new File("tempFile.txt");
         boolean foundRecord = false;
 
@@ -85,7 +85,7 @@ public class FileHandler {
 
         while((currentLine = reader.readLine()) != null) {
             String trimmedLine = currentLine.trim();
-            if (recordValidator.validate(trimmedLine, key) && !foundRecord) {
+            if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
                 foundRecord = true;
                 continue;
             }
@@ -100,7 +100,7 @@ public class FileHandler {
     }
 
     // UPDATE
-    public boolean updateLine(String key, String newRecord, RecordValidator recordValidator) throws IOException {
+    public boolean updateLine(String key, String newRecord, LineValidator lineValidator) throws IOException {
         File tempFile = new File("tempFile.txt");
         boolean foundRecord = false;
 
@@ -111,7 +111,7 @@ public class FileHandler {
 
         while((currentLine = reader.readLine()) != null) {
             String trimmedLine = currentLine.trim();
-            if (recordValidator.validate(trimmedLine, key) && !foundRecord) {
+            if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
                 foundRecord = true;
                 writer.write(newRecord + System.getProperty("line.separator"));
                 continue;

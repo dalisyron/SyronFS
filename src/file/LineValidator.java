@@ -1,6 +1,6 @@
 package file;
 
-public interface RecordValidator {
+public interface LineValidator {
 
     boolean validate(String record, String key);
 }
