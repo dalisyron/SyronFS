@@ -16,18 +16,22 @@ public class FileHandler {
         this(new File(path));
     }
 
-    private PrintWriter retrievePrintWriter() {
+    private BufferedWriter retrieveBufferedWriter() throws IOException {
+        return Files.newBufferedWriter(file.toPath());
+    }
+
+    private BufferedReader retrieveBufferedReader() {
         try {
-            return new PrintWriter(Files.newBufferedWriter(file.toPath(), StandardOpenOption.APPEND));
+            return Files.newBufferedReader(file.toPath());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private BufferedReader retrieveBufferedReader() {
+    private PrintWriter retrievePrintWriter() {
         try {
-            return Files.newBufferedReader(file.toPath());
+            return new PrintWriter(retrieveBufferedWriter());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -67,5 +71,31 @@ public class FileHandler {
         }
 
         return null;
+    }
+
+    // DELETE
+    public boolean deleteLine(String key, RecordValidator recordValidator) throws IOException {
+        File tempFile = new File("tempFile.txt");
+        boolean foundRecord = false;
+
+        BufferedReader reader = retrieveBufferedReader();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String currentLine;
+
+        while((currentLine = reader.readLine()) != null) {
+            String trimmedLine = currentLine.trim();
+            if (recordValidator.validate(trimmedLine, key) && !foundRecord) {
+                foundRecord = true;
+                continue;
+            }
+            writer.write(currentLine + System.getProperty("line.separator"));
+        }
+
+        writer.close();
+        reader.close();
+        boolean successful = tempFile.renameTo(file);
+
+        return successful && foundRecord;
     }
 }
