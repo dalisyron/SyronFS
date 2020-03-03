@@ -25,12 +25,47 @@ public class FileHandler {
         }
     }
 
-    public void appendLine(String line) {
-        PrintWriter printWriter = retrievePrintWriter();
-
-        if (printWriter != null) {
-            printWriter.println(line);
-            printWriter.close();
+    private BufferedReader retrieveBufferedReader() {
+        try {
+            return Files.newBufferedReader(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
+
+    // ADD
+    public void appendLine(String line) {
+        PrintWriter writer = retrievePrintWriter();
+
+        if (writer != null) {
+            writer.println(line);
+            writer.close();
+        }
+    }
+
+    // FIND
+    public String findLine(String key, RecordValidator recordValidator) {
+        BufferedReader reader = retrieveBufferedReader();
+
+        if (reader == null) {
+            System.err.println("Failed to retrieve new BufferedReader");
+            return null;
+        }
+
+        String line = "";
+
+        while (true) {
+            try {
+                if ((line = reader.readLine()) == null) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (recordValidator.validate(line, key)) {
+                return line;
+            }
+        }
+
+        return null;
     }
 }
