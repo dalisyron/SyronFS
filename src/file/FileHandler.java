@@ -48,7 +48,7 @@ public class FileHandler {
     }
 
     // FIND
-    public String findLine(String key, RecordValidator recordValidator) {
+    public String findLine(String key, RecordValidator recordValidator) throws IOException {
         BufferedReader reader = retrieveBufferedReader();
 
         if (reader == null) {
@@ -69,6 +69,7 @@ public class FileHandler {
             }
         }
 
+        reader.close();
         return null;
     }
 
