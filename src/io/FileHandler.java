@@ -38,91 +38,124 @@ public class FileHandler {
     }
 
     // ADD
-    public void appendLine(String line) {
+    public boolean appendLine(String line) {
         PrintWriter writer = retrievePrintWriter();
 
         if (writer != null) {
             writer.println(line);
             writer.close();
+            return true;
         }
+
+        return false;
     }
 
     // FIND
     public String findLine(String key, LineValidator lineValidator) throws IOException {
-        BufferedReader reader = retrieveBufferedReader();
+        try {
+            BufferedReader reader = retrieveBufferedReader();
 
-        if (reader == null) {
-            System.err.println("Failed to retrieve new BufferedReader");
+            if (reader == null) {
+                System.err.println("Failed to retrieve new BufferedReader");
+                return null;
+            }
+
+            String line = "";
+
+            while (true) {
+                try {
+                    if ((line = reader.readLine()) == null) break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (lineValidator.validate(line, key)) {
+                    return line;
+                }
+            }
+
+            reader.close();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
-
-        String line = "";
-
-        while (true) {
-            try {
-                if ((line = reader.readLine()) == null) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (lineValidator.validate(line, key)) {
-                return line;
-            }
-        }
-
-        reader.close();
-        return null;
     }
 
     // DELETE
-    public boolean deleteLine(String key, LineValidator lineValidator) throws IOException {
-        File tempFile = new File("tempFile.txt");
-        boolean foundRecord = false;
+    public boolean deleteLine(String key, LineValidator lineValidator) {
+        try {
+            File tempFile = new File("tempFile.txt");
+            boolean foundRecord = false;
 
-        BufferedReader reader = retrieveBufferedReader();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+            BufferedReader reader = retrieveBufferedReader();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-        String currentLine;
+            String currentLine;
 
-        while((currentLine = reader.readLine()) != null) {
-            String trimmedLine = currentLine.trim();
-            if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
-                foundRecord = true;
-                continue;
+            while((currentLine = reader.readLine()) != null) {
+                String trimmedLine = currentLine.trim();
+                if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
+                    foundRecord = true;
+                    continue;
+                }
+                writer.write(currentLine + System.getProperty("line.separator"));
             }
-            writer.write(currentLine + System.getProperty("line.separator"));
+
+            writer.close();
+            reader.close();
+            boolean successful = tempFile.renameTo(file);
+
+            return successful && foundRecord;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-
-        writer.close();
-        reader.close();
-        boolean successful = tempFile.renameTo(file);
-
-        return successful && foundRecord;
     }
 
     // UPDATE
-    public boolean updateLine(String key, String newRecord, LineValidator lineValidator) throws IOException {
+    public boolean updateLine(String key, String newRecord, LineValidator lineValidator) {
         File tempFile = new File("tempFile.txt");
         boolean foundRecord = false;
+        try {
+            BufferedReader reader = retrieveBufferedReader();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
-        BufferedReader reader = retrieveBufferedReader();
-        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+            String currentLine;
 
-        String currentLine;
-
-        while((currentLine = reader.readLine()) != null) {
-            String trimmedLine = currentLine.trim();
-            if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
-                foundRecord = true;
-                writer.write(newRecord + System.getProperty("line.separator"));
-                continue;
+            while((currentLine = reader.readLine()) != null) {
+                String trimmedLine = currentLine.trim();
+                if (lineValidator.validate(trimmedLine, key) && !foundRecord) {
+                    foundRecord = true;
+                    writer.write(newRecord + System.getProperty("line.separator"));
+                    continue;
+                }
+                writer.write(currentLine + System.getProperty("line.separator"));
             }
-            writer.write(currentLine + System.getProperty("line.separator"));
+
+            writer.close();
+            reader.close();
+            boolean successful = tempFile.renameTo(file);
+
+            return successful && foundRecord;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // LINE COUNT
+    public int getLineCount() throws IOException {
+        BufferedReader bufferedReader = retrieveBufferedReader();
+        int count = 0;
+
+        while (true) {
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                break;
+            }
+            count++;
         }
 
-        writer.close();
-        reader.close();
-        boolean successful = tempFile.renameTo(file);
-
-        return successful && foundRecord;
+        return count;
     }
 }
