@@ -1,11 +1,11 @@
 package datasource.film.test
 
 import datasource.film.FilmDataSource
-import entity.Film
+import datasource.dto.FilmDto
 import io.FileHandler
 import java.io.File
 
-val Avengers = Film(
+val Avengers = FilmDto(
     20,
     "Avengers",
     "Dan bliz",
@@ -13,7 +13,7 @@ val Avengers = Film(
     "Action"
 )
 
-val Separation = Film(
+val Separation = FilmDto(
     10,
     "Separation",
     "Asghar joon",
@@ -21,7 +21,7 @@ val Separation = Film(
     "Drama"
 )
 
-val Avatar = Film(
+val Avatar = FilmDto(
     30,
     "Avatar",
     "James",

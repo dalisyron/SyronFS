@@ -10,6 +10,4 @@ public class ArtistDataSource extends BaseDataSource {
     public ArtistDataSource(FileHandler fileHandler) {
         super(fileHandler);
     }
-
-
 }

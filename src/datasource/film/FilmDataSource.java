@@ -2,7 +2,7 @@ package datasource.film;
 
 import datasource.base.BaseDataSource;
 import datasource.film.mapper.FilmMappers;
-import entity.Film;
+import datasource.dto.FilmDto;
 import io.FileHandler;
 
 import java.io.IOException;
@@ -14,9 +14,9 @@ public class FilmDataSource extends BaseDataSource {
         super(fileHandler);
     }
 
-    public void addFilm(Film film) {
+    public void addFilm(FilmDto film) {
         try {
-            fileHandler.appendLine(FilmMappers.mapFilmToRecordFormat(film));
+            fileHandler.appendLine(FilmMappers.mapFilmDtoToRecordFormat(film));
             System.out.println(String.format(">> Added film %s successfully", film.getName()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
@@ -25,10 +25,10 @@ public class FilmDataSource extends BaseDataSource {
         }
     }
 
-    public void updateFilm(int id, Film updatedFilm) {
+    public void updateFilm(int id, FilmDto updatedFilm) {
         try {
-            fileHandler.updateLine("" + id, FilmMappers.mapFilmToRecordFormat(updatedFilm), (record, key) -> {
-                Film film = FilmMappers.mapRecordToFilm(record);
+            fileHandler.updateLine("" + id, FilmMappers.mapFilmDtoToRecordFormat(updatedFilm), (record, key) -> {
+                FilmDto film = FilmMappers.mapRecordToFilmDto(record);
                 return film.getId() == Integer.parseInt(key);
             });
             System.out.println(String.format(">> Updated film %d successfully", id));
@@ -42,10 +42,10 @@ public class FilmDataSource extends BaseDataSource {
     public void findFilmByName(String name) {
         try {
             String result = fileHandler.findLine(name, (record, key) -> {
-                Film film = FilmMappers.mapRecordToFilm(record);
+                FilmDto film = FilmMappers.mapRecordToFilmDto(record);
                 return film.getName().equals(key);
             });
-            Film film = FilmMappers.mapRecordToFilm(result);
+            FilmDto film = FilmMappers.mapRecordToFilmDto(result);
             System.out.println(String.format(">> Found movie named %s with id %d", name, film.getId()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
@@ -57,10 +57,10 @@ public class FilmDataSource extends BaseDataSource {
     public void findFilmById(int id) {
         try {
             String result = fileHandler.findLine(String.format("%d", id), (record, key) -> {
-                Film film = FilmMappers.mapRecordToFilm(record);
+                FilmDto film = FilmMappers.mapRecordToFilmDto(record);
                 return film.getId() == Integer.parseInt(key);
             });
-            Film film = FilmMappers.mapRecordToFilm(result);
+            FilmDto film = FilmMappers.mapRecordToFilmDto(result);
             System.out.println(String.format(">> Found movie named %s with id %d", film.getName(), id));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
@@ -72,7 +72,7 @@ public class FilmDataSource extends BaseDataSource {
     public void deleteFilm(int id) {
         try {
             fileHandler.deleteLine(String.format("%d", id), (record, key) ->
-                    FilmMappers.mapRecordToFilm(record).getId() == Integer.parseInt(key)
+                    FilmMappers.mapRecordToFilmDto(record).getId() == Integer.parseInt(key)
             );
             System.out.println(String.format(">> Deleted movie with id %d successfully", id));
         } catch (FileSystemException e) {
@@ -81,5 +81,4 @@ public class FilmDataSource extends BaseDataSource {
             e.printStackTrace();
         }
     }
-
 }

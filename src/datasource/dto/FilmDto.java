@@ -1,6 +1,6 @@
-package entity;
+package datasource.dto;
 
-public class Film {
+public class FilmDto {
 
     private final int id;
     private final String name;
@@ -8,7 +8,7 @@ public class Film {
     private final int productionYear;
     private final String genre;
 
-    public Film(int id, String name, String directorName, int productionYear, String genre) {
+    public FilmDto(int id, String name, String directorName, int productionYear, String genre) {
 
         this.id = id;
         this.name = name;

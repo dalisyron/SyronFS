@@ -1,17 +1,17 @@
 package datasource.film.mapper;
 
-import entity.Film;
+import datasource.dto.FilmDto;
 
 import java.util.regex.Pattern;
 
 public class FilmMappers {
 
-    public static String mapFilmToRecordFormat(Film film) {
+    public static String mapFilmDtoToRecordFormat(FilmDto film) {
         return "$%d-" + film.getId() + "/" + film.getName() +
                 "/" + film.getDirectorName() + "/" + film.getProductionYear() + "/" + film.getGenre();
     }
 
-    public static Film mapRecordToFilm(String record) {
+    public static FilmDto mapRecordToFilmDto(String record) {
         int dashIndex = record.indexOf('-');
         String trimSubstring = record.substring(0, dashIndex + 1);
 
@@ -25,6 +25,6 @@ public class FilmMappers {
         int productionYear = Integer.parseInt(items[3]);
         String genre = items[4];
 
-        return new Film(id, name, directorName, productionYear, genre);
+        return new FilmDto(id, name, directorName, productionYear, genre);
     }
 }

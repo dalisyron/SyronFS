@@ -1,19 +1,19 @@
-package entity;
+package datasource.dto;
 
 import java.util.List;
 
-public class Artist {
+public class ArtistDto {
 
     private final int id;
     private final String name;
     private final int age;
-    private final List<Film> films;
+    private final List<String> filmNames;
 
-    public Artist(int id, String name, int age, List<Film> films) {
+    public ArtistDto(int id, String name, int age, List<String> filmNames) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.films = films;
+        this.filmNames = filmNames;
     }
 
     public int getId() {
@@ -28,7 +28,7 @@ public class Artist {
         return age;
     }
 
-    public List<Film> getFilms() {
-        return films;
+    public List<String> getFilmNames() {
+        return filmNames;
     }
 }
