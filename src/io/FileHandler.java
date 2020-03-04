@@ -28,6 +28,16 @@ public class FileHandler {
         this(new File(path));
     }
 
+    public void initialize() throws FileSystemException {
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new FileSystemException(String.format("Internal File System Error: Could not create new file for %s", file.getName()));
+            }
+        }
+    }
     private BufferedWriter retrieveBufferedWriter() throws IOException {
         return Files.newBufferedWriter(file.toPath());
     }

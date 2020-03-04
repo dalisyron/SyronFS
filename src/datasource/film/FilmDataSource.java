@@ -15,6 +15,14 @@ public class FilmDataSource {
         this.fileHandler = fileHandler;
     }
 
+    public void initialize() {
+        try {
+            fileHandler.initialize();
+        } catch (FileSystemException e) {
+            System.err.println(">> Error while initializing new file source for films");
+        }
+    }
+
     public void addFilm(Film film) {
         try {
             fileHandler.appendLine(FilmMappers.mapFilmToRecordFormat(film));

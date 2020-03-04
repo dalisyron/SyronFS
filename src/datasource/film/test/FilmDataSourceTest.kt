@@ -31,9 +31,9 @@ val Avatar = Film(
 
 fun main() {
     val dataSource =
-        FilmDataSource(FileHandler(File("/Users/mobin/Library/Preferences/IdeaIC2019.3/scratches/scratch.txt")))
+        FilmDataSource(FileHandler(File("./resource/Films.txt")))
 
-    dataSource.clearData()
+    dataSource.initialize()
 
     dataSource.addFilm(Avatar)
 
