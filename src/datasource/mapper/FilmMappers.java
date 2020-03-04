@@ -1,9 +1,7 @@
 package datasource.mapper;
 
-import com.sun.tools.javac.util.Convert;
 import entity.Film;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class FilmMappers {
