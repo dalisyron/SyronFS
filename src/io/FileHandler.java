@@ -5,13 +5,23 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 public class FileHandler {
 
     private File file;
+    private final LineEnumerator lineEnumerator;
 
     public FileHandler(File file) {
         this.file = file;
+        lineEnumerator = (line, number) -> {
+            int dashIndex = line.indexOf('-');
+            String trimSubstring = line.substring(0, dashIndex + 1);
+
+            String record = line.replaceFirst(Pattern.quote(trimSubstring), "").trim();
+
+            return String.format("%d-%s", number, record);
+        };
     }
 
     public FileHandler(String path) {
@@ -40,6 +50,7 @@ public class FileHandler {
 
         writer.println(line);
         writer.close();
+        enumerateLines();
     }
 
     // FIND
@@ -89,6 +100,7 @@ public class FileHandler {
         if (!renameSuccessful) {
             throw new FileSystemException(String.format("Internal File System Error: Could not update the temporary %s file.", file.getName()));
         }
+        enumerateLines();
     }
 
     // UPDATE
@@ -116,6 +128,39 @@ public class FileHandler {
         if (!foundRecord) {
             throw new NoSuchElementException("Record Error: Requested record was not found");
         }
+
+        boolean renameSuccessful = tempFile.renameTo(file);
+
+        if (!renameSuccessful) {
+            throw new FileSystemException(String.format("Internal File System Error: Could not update the temporary %s file.", file.getName()));
+        }
+    }
+
+    public void clearFile() throws IOException {
+        BufferedWriter bufferedWriter = retrieveBufferedWriter();
+
+        bufferedWriter.write("");
+    }
+
+    private void enumerateLines() throws IOException {
+        File tempFile = new File("tempFile.txt");
+        boolean foundRecord = false;
+
+        BufferedReader reader = retrieveBufferedReader();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+        String currentLine;
+
+        int ind = 1;
+
+        while((currentLine = reader.readLine()) != null) {
+            String trimmedLine = currentLine.trim();
+            writer.write(lineEnumerator.enumerate(trimmedLine, ind) + System.getProperty("line.separator"));
+            ind++;
+        }
+
+        writer.close();
+        reader.close();
 
         boolean renameSuccessful = tempFile.renameTo(file);
 

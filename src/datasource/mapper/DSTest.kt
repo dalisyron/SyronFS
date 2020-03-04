@@ -33,11 +33,12 @@ fun main() {
     val dataSource =
         FilmDataSource(FileHandler(File("/Users/mobin/Library/Preferences/IdeaIC2019.3/scratches/scratch.txt")))
 
-    dataSource.findFilmByName("Avatar")
-
-    dataSource.findFilmById(20)
+    dataSource.clearData()
 
     dataSource.addFilm(Avatar)
 
-    dataSource.deleteFilm(20)
+    dataSource.addFilm(Separation)
+    dataSource.addFilm(Avengers)
+
+    dataSource.deleteFilm(10)
 }

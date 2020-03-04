@@ -82,4 +82,15 @@ public class FilmDataSource {
             e.printStackTrace();
         }
     }
+
+    public void clearData() {
+        try {
+            fileHandler.clearFile();
+            System.out.println(">> Successfully cleared all data");
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
