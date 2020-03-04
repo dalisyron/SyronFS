@@ -1,5 +1,6 @@
 package datasource.film;
 
+import datasource.base.BaseDataSource;
 import datasource.film.mapper.FilmMappers;
 import entity.Film;
 import io.FileHandler;
@@ -7,20 +8,10 @@ import io.FileHandler;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 
-public class FilmDataSource {
-
-    private FileHandler fileHandler;
+public class FilmDataSource extends BaseDataSource {
 
     public FilmDataSource(FileHandler fileHandler) {
-        this.fileHandler = fileHandler;
-    }
-
-    public void initialize() {
-        try {
-            fileHandler.initialize();
-        } catch (FileSystemException e) {
-            System.err.println(">> Error while initializing new file source for films");
-        }
+        super(fileHandler);
     }
 
     public void addFilm(Film film) {
@@ -91,14 +82,4 @@ public class FilmDataSource {
         }
     }
 
-    public void clearData() {
-        try {
-            fileHandler.clearFile();
-            System.out.println(">> Successfully cleared all data");
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
