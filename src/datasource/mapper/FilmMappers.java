@@ -4,6 +4,7 @@ import com.sun.tools.javac.util.Convert;
 import entity.Film;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class FilmMappers {
 
@@ -15,7 +16,8 @@ public class FilmMappers {
     public static Film mapRecordToFilm(String record) {
         int dashIndex = record.indexOf('-');
         String trimSubstring = record.substring(0, dashIndex + 1);
-        String trimmedRecord = record.replaceFirst(trimSubstring, "").trim();
+
+        String trimmedRecord = record.replaceFirst(Pattern.quote(trimSubstring), "").trim();
 
         String[] items = trimmedRecord.split("/");
 
