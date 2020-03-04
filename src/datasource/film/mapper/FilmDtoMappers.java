@@ -4,7 +4,7 @@ import datasource.dto.FilmDto;
 
 import java.util.regex.Pattern;
 
-public class FilmMappers {
+public class FilmDtoMappers {
 
     public static String mapFilmDtoToRecordFormat(FilmDto film) {
         return "$%d-" + film.getId() + "/" + film.getName() +

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ArtistMappers {
+public class ArtistDtoMappers {
 
     public static String mapArtistDtoToRecordFormat(ArtistDto artistDto) {
         return "$%d-" + artistDto.getId() + "/" + artistDto.getName() +
