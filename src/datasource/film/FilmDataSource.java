@@ -46,7 +46,7 @@ public class FilmDataSource extends BaseDataSource {
                 return film.getName().equals(key);
             });
             FilmDto film = FilmDtoMappers.mapRecordToFilmDto(result);
-            System.out.println(String.format(">> Found movie named %s with id %d", name, film.getId()));
+            System.out.println(String.format(">> Found film named %s with id %d", name, film.getId()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
@@ -61,7 +61,7 @@ public class FilmDataSource extends BaseDataSource {
                 return film.getId() == Integer.parseInt(key);
             });
             FilmDto film = FilmDtoMappers.mapRecordToFilmDto(result);
-            System.out.println(String.format(">> Found movie named %s with id %d", film.getName(), id));
+            System.out.println(String.format(">> Found film named %s with id %d", film.getName(), id));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
@@ -74,7 +74,7 @@ public class FilmDataSource extends BaseDataSource {
             fileHandler.deleteLine(String.format("%d", id), (record, key) ->
                     FilmDtoMappers.mapRecordToFilmDto(record).getId() == Integer.parseInt(key)
             );
-            System.out.println(String.format(">> Deleted movie with id %d successfully", id));
+            System.out.println(String.format(">> Deleted film with id %d successfully", id));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
