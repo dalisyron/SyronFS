@@ -1,6 +1,6 @@
-package datasource;
+package datasource.film;
 
-import datasource.mapper.FilmMappers;
+import datasource.film.mapper.FilmMappers;
 import entity.Film;
 import io.FileHandler;
 

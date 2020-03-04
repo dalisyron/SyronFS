@@ -1,4 +1,4 @@
-package datasource.mapper;
+package datasource.film.mapper;
 
 import entity.Film;
 

@@ -1,6 +1,5 @@
-import datasource.FilmDataSource;
-import datasource.mapper.DSTestKt;
-import entity.Film;
+import datasource.film.FilmDataSource;
+import datasource.film.mapper.DSTestKt;
 import io.FileHandler;
 
 import java.io.File;
