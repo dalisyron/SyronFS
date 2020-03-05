@@ -1,9 +1,11 @@
 package repository;
 
 import datasource.artist.ArtistDataSource;
+import datasource.artist.mapper.ArtistDtoMappers;
 import datasource.dto.ArtistDto;
 import datasource.dto.FilmDto;
 import datasource.film.FilmDataSource;
+import datasource.film.mapper.FilmDtoMappers;
 import repository.entity.Artist;
 import repository.entity.Film;
 import repository.mapper.FilmEntityMappers;
@@ -15,8 +17,10 @@ import repository.query.update.UpdateFilmQuery;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 public class Repository {
 
@@ -131,14 +135,73 @@ public class Repository {
     }
 
     public void updateFilm(UpdateFilmQuery query) {
-        // TODO: Complicated query chains
+        try {
+            FilmDto oldFilm = filmDataSource.findFilmByName(query.getName());
+            FilmDto newFilm = null;
+            switch (query.getFieldToUpdate()) {
+                case "FilmID":
+                    newFilm = FilmDtoMappers.updateId(oldFilm, Integer.parseInt(query.getFieldValue()));
+                    break;
+                case "FilmName":
+                    newFilm = FilmDtoMappers.updateName(oldFilm, query.getFieldValue());
+                    break;
+                case "DirectorName":
+                    newFilm = FilmDtoMappers.updateDirector(oldFilm, query.getFieldValue());
+                    break;
+                case "ProductionYear":
+                    newFilm = FilmDtoMappers.updateProductionYear(oldFilm, Integer.parseInt(query.getFieldValue()));
+                    break;
+                case "Genre":
+                    newFilm = FilmDtoMappers.updateGenre(oldFilm, query.getFieldValue());
+                    break;
+                default:
+                    throw new IllegalUpdateFieldException();
+            }
+
+            if (!isValid(newFilm)) {
+                throw new IllegalFieldsException();
+            }
+
+            filmDataSource.updateFilm(query.getName(), newFilm);
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateArtist(UpdateArtistQuery query) {
-//        if (!isValid(query.getArtistToAdd())) {
-//            throw new IllegalFieldsException();
-//        }
-        // TODO: Complicated query chains
+        try {
+            ArtistDto oldArtist = artistDataSource.findArtistByName(query.getName());
+            ArtistDto newArtist = null;
+            switch (query.getFieldToUpdate()) {
+                case "ArtistID":
+                    newArtist = ArtistDtoMappers.updateId(oldArtist, Integer.parseInt(query.getFieldValue()));
+                    break;
+                case "ArtistName":
+                    newArtist = ArtistDtoMappers.updateName(oldArtist, query.getFieldValue());
+                    break;
+                case "Age":
+                    newArtist = ArtistDtoMappers.updateAge(oldArtist, Integer.parseInt(query.getFieldValue()));
+                    break;
+                case "ArtistFilms":
+                    List<String> filmNames = Arrays.asList(query.getFieldValue().split(Pattern.quote(",")));
+                    newArtist = ArtistDtoMappers.updateFilmNames(oldArtist, filmNames);
+                    break;
+                default:
+                    throw new IllegalUpdateFieldException();
+            }
+
+            if (!isValid(newArtist)) {
+                throw new IllegalFieldsException();
+            }
+
+            artistDataSource.updateArtist(query.getName(), newArtist);
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Artist findArtistEntityById(int id) {

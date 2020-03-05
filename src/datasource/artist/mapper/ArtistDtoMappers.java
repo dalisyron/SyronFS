@@ -29,4 +29,20 @@ public class ArtistDtoMappers {
 
         return new ArtistDto(id, name, age, filmNames);
     }
+
+    public static ArtistDto updateId(ArtistDto old, int id) {
+        return new ArtistDto(id, old.getName(), old.getAge(), old.getFilmNames());
+    }
+
+    public static ArtistDto updateName(ArtistDto old, String name) {
+        return new ArtistDto(old.getId(), name, old.getAge(), old.getFilmNames());
+    }
+
+    public static ArtistDto updateAge(ArtistDto old, int age) {
+        return new ArtistDto(old.getId(), old.getName(), age, old.getFilmNames());
+    }
+
+    public static ArtistDto updateFilmNames(ArtistDto old, List<String> filmNames) {
+        return new ArtistDto(old.getId(), old.getName(), old.getAge(), filmNames);
+    }
 }

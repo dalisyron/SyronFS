@@ -19,18 +19,11 @@ public class FilmDataSource extends BaseDataSource {
 
     }
 
-    public void updateFilm(String name, FilmDto updatedFilm) {
-        try {
-            fileHandler.updateLine(name, FilmDtoMappers.mapFilmDtoToRecordFormat(updatedFilm), (record, key) -> {
-                FilmDto film = FilmDtoMappers.mapRecordToFilmDto(record);
-                return film.getId() == Integer.parseInt(key);
-            });
-            System.out.println(String.format(">> Updated film %s successfully", name));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void updateFilm(String name, FilmDto updatedFilm) throws IOException {
+        fileHandler.updateLine(name, FilmDtoMappers.mapFilmDtoToRecordFormat(updatedFilm), (record, key) -> {
+            FilmDto film = FilmDtoMappers.mapRecordToFilmDto(record);
+            return film.getName().equals(key);
+        });
     }
 
     public FilmDto findFilmByName(String name) throws IOException {

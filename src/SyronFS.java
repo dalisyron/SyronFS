@@ -1,8 +1,5 @@
 import di.Injector;
-import repository.DuplicateElementIdException;
-import repository.IllegalFieldsException;
-import repository.NonExistingFilmException;
-import repository.Repository;
+import repository.*;
 import repository.query.Query;
 import repository.query.add.AddArtistQuery;
 import repository.query.add.AddFilmQuery;
@@ -28,6 +25,9 @@ Add FilmID: 1123 , FilmNat e: The Salesman , DirectorName: Asghar Farhadi , Prod
 
 _Add Artist Query_
 Add ArtistID: 2243 , ArtistName: Shahab Hosseini , Age: 46 , ArtistFilms: The Salesman,About Elly,A Separation
+
+_Add Artist Query With Film Validation_
+Add ArtistID: 2243 , ArtistName: Shahab Hosseini , Age: 46 , ArtistFilms: The Salesman,About Elly,A Separation -checkFilmsExist
 
 _Find Film By FilmID_
 Find Film 1123 By FilmID
@@ -112,7 +112,7 @@ public class SyronFS {
                                     ((AddArtistQuery) query).getArtistToAdd().getId(), duplicateName
                             ));
                         } catch (IllegalFieldsException e) {
-                            System.out.println(">> Error: Invalid film info.");
+                            System.out.println(">> Error: Film info violates film constraints.");
                         }
                     }
                 } else if (query instanceof FindFilmByIdQuery) {
@@ -150,14 +150,20 @@ public class SyronFS {
                 } else if (query instanceof UpdateFilmQuery) {
                     try {
                         repository.updateFilm((UpdateFilmQuery) query);
+                        System.out.println(String.format("Updated field %s to %s successfully.", ((UpdateFilmQuery) query).getFieldToUpdate(), ((UpdateFilmQuery) query).getFieldValue()));
                     } catch (NoSuchElementException e) {
                         System.out.println(String.format(
                                 ">> Error: No film named %s was found", ((UpdateFilmQuery) query).getName()
                         ));
+                    } catch (IllegalFieldsException e) {
+                        System.out.println(">> Error: The new field value violates film constraints.");
+                    } catch (IllegalUpdateFieldException e) {
+                        System.out.println(">> The specified field does not belong to the film model.");
                     }
                 } else if (query instanceof UpdateArtistQuery) {
                     try {
                         repository.updateArtist((UpdateArtistQuery) query);
+                        System.out.println(String.format("Updated field %s to %s successfully.", ((UpdateArtistQuery) query).getFieldToUpdate(), ((UpdateArtistQuery) query).getFieldValue()));
                     } catch (NoSuchElementException e) {
                         System.out.println(String.format(
                                 ">> Error: No artist named %s was found", ((UpdateArtistQuery) query).getName()

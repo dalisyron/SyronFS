@@ -18,11 +18,11 @@ public class ArtistDataSource extends BaseDataSource {
         fileHandler.appendLine(ArtistDtoMappers.mapArtistDtoToRecordFormat(artist));
     }
 
-    public void updateArtist(int id, ArtistDto updatedArtist) {
+    public void updateArtist(String name, ArtistDto updatedArtist) {
         try {
-            fileHandler.updateLine("" + id, ArtistDtoMappers.mapArtistDtoToRecordFormat(updatedArtist), (record, key) -> {
+            fileHandler.updateLine(name, ArtistDtoMappers.mapArtistDtoToRecordFormat(updatedArtist), (record, key) -> {
                 ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
-                return artist.getId() == Integer.parseInt(key);
+                return artist.getName().equals(key);
             });
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
