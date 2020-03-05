@@ -1,6 +1,7 @@
 package di;
 import datasource.artist.ArtistDataSource;
 import datasource.film.FilmDataSource;
+import datasource.index.IndexDataSource;
 import io.FileHandler;
 import repository.Repository;
 
@@ -34,12 +35,24 @@ public class Injector {
         return new FileHandler(provideArtistFile());
     }
 
+    public FileHandler provideArtistIdIndexFileHandler() {
+        return new FileHandler(new File(AppConfig.ARTIST_ID_INDEX_PATH));
+    }
+
+    public FileHandler provideArtistNameIndexFileHandler() {
+        return new FileHandler(new File(AppConfig.ARTIST_NAME_INDEX_PATH));
+    }
+
     public ArtistDataSource provideArtistDataSource() {
         return new ArtistDataSource(provideArtistFileHandler());
     }
 
+    public IndexDataSource provideArtistIdIndexDataSource() {
+        return new IndexDataSource(provideArtistIdIndexFileHandler(), provideArtistNameIndexFileHandler());
+    }
+
     public Repository provideRepository() {
-        return new Repository(provideFilmDataSource(), provideArtistDataSource());
+        return new Repository(provideFilmDataSource(), provideArtistDataSource(), provideArtistIdIndexDataSource());
     }
 
     public static Injector getInstance() {

@@ -1,6 +1,8 @@
 import datasource.dto.ArtistDto;
+import di.AppConfig;
 import di.Injector;
 import repository.*;
+import repository.entity.Film;
 import repository.entity.FilmCasting;
 import repository.query.Query;
 import repository.query.add.AddArtistQuery;
@@ -76,6 +78,22 @@ public class SyronFS {
                     continue;
                 } else if (queryString.equals("Exit")) {
                     break;
+                } else if (queryString.equals("BuildArtistNameIndex")) {
+                    try {
+                        repository.buildArtistNameIndex();
+                        System.out.println(String.format(">> Successfully created index for artist name column in \"%s\"", AppConfig.ARTIST_NAME_INDEX_PATH));
+                        continue;
+                    } catch (Exception e) {
+                        System.out.println(String.format(">> Error: %s", e.getMessage()));
+                    }
+                } else if (queryString.equals("BuildArtistIdIndex")) {
+                    try {
+                        repository.buildArtistIdIndex();
+                        System.out.println(String.format(">> Successfully created index for artist id column in \"%s\"", AppConfig.ARTIST_ID_INDEX_PATH));
+                        continue;
+                    } catch (Exception e) {
+                        System.out.println(String.format(">> Error: %s", e.getMessage()));
+                    }
                 } else if (queryString.equals("FilmCastings")) {
                     List<FilmCasting> castings = repository.getAllFilmCastings();
 
@@ -136,7 +154,8 @@ public class SyronFS {
                     }
                 } else if (query instanceof FindFilmByIdQuery) {
                     try {
-                        repository.findFilm(((FindFilmByIdQuery) query).getFilmId());
+                        Film film = repository.findFilm(((FindFilmByIdQuery) query).getFilmId());
+                        System.out.println(String.format(">> Repository: Found film named %s with id %d", film.getName(), film.getId()));
                     } catch (NoSuchElementException e) {
                         System.out.println(String.format(
                                 ">> Error: No film with id %d was found", ((FindFilmByIdQuery) query).getFilmId()
@@ -144,7 +163,8 @@ public class SyronFS {
                     }
                 } else if (query instanceof FindFilmByNameQuery) {
                     try {
-                        repository.findFilm(((FindFilmByNameQuery) query).getFilmName());
+                        Film film = repository.findFilm(((FindFilmByNameQuery) query).getFilmName());
+                        System.out.println(String.format(">> Repository: Found film named %s with id %d", film.getName(), film.getId()));
                     } catch (NoSuchElementException e) {
                         System.out.println(String.format(
                                 ">> Error: No film named %s was found", ((FindFilmByNameQuery) query).getFilmName()

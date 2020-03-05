@@ -7,28 +7,8 @@ import java.nio.file.FileSystemException;
 
 public abstract class BaseDataSource {
 
-    protected FileHandler fileHandler;
+    public abstract void initialize();
 
-    public BaseDataSource(FileHandler fileHandler) {
-        this.fileHandler = fileHandler;
-    }
+    public abstract void clearData();
 
-    public void initialize() {
-        try {
-            fileHandler.initialize();
-        } catch (FileSystemException e) {
-            System.err.println(">> Error while initializing new file source for films");
-        }
-    }
-
-    public void clearData() {
-        try {
-            fileHandler.clearFile();
-            System.out.println(String.format(">> Successfully cleared all data in %s", fileHandler.getFile().getName()));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

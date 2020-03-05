@@ -58,6 +58,10 @@ public class FileHandler {
         return new PrintWriter(retrieveAppendBufferedWriter());
     }
 
+    private PrintWriter retrieveNonAppendPrintWriter() throws IOException {
+        return new PrintWriter(retrieveBufferedWriter());
+    }
+
     // ADD
     public void appendLine(String line) throws IOException {
         PrintWriter writer = retrieveAppendPrintWriter();
@@ -201,5 +205,14 @@ public class FileHandler {
 
         reader.close();
         return result;
+    }
+
+    public void writeLines(List<String> lines) throws IOException {
+        PrintWriter printWriter = retrieveNonAppendPrintWriter();
+
+        for (String line : lines) {
+            printWriter.println(line);
+        }
+        printWriter.close();
     }
 }

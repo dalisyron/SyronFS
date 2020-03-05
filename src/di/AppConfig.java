@@ -12,4 +12,6 @@ public class AppConfig {
 
     public static String FILM_PATH = "./resource/Films.txt";
     public static String ARTIST_PATH = "./resource/Artists.txt";
+    public static String ARTIST_ID_INDEX_PATH = "./resource/ArtistIDIndex.txt";
+    public static String ARTIST_NAME_INDEX_PATH = "./resource/ArtistNameIndex.txt";
 }

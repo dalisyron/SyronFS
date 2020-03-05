@@ -6,6 +6,8 @@ import datasource.dto.ArtistDto;
 import datasource.dto.FilmDto;
 import datasource.film.FilmDataSource;
 import datasource.film.mapper.FilmDtoMappers;
+import datasource.index.IndexDataSource;
+import kotlin.Pair;
 import repository.entity.Artist;
 import repository.entity.Film;
 import repository.entity.FilmCasting;
@@ -24,10 +26,12 @@ public class Repository {
 
     private FilmDataSource filmDataSource;
     private ArtistDataSource artistDataSource;
+    private IndexDataSource indexDataSource;
 
-    public Repository(FilmDataSource filmDataSource, ArtistDataSource artistDataSource) {
+    public Repository(FilmDataSource filmDataSource, ArtistDataSource artistDataSource, IndexDataSource indexDataSource) {
         this.filmDataSource = filmDataSource;
         this.artistDataSource = artistDataSource;
+        this.indexDataSource = indexDataSource;
     }
 
     public void initialize() {
@@ -38,6 +42,7 @@ public class Repository {
     public void clear() {
         filmDataSource.clearData();
         artistDataSource.clearData();
+        indexDataSource.clearData();
     }
 
     public void addFilm(AddFilmQuery query) {
@@ -100,7 +105,6 @@ public class Repository {
     public Film findFilm(String filmName) {
         try {
             FilmDto filmDto = filmDataSource.findFilmByName(filmName);
-            System.out.println(String.format(">> Repository: Found film named %s with id %d", filmDto.getName(), filmDto.getId()));
             return FilmEntityMappers.mapFilmDtoToFilmEntity(filmDto);
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
@@ -304,6 +308,64 @@ public class Repository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void buildArtistNameIndex() {
+        try {
+            List<FilmDto> films = filmDataSource.getAllFilms();
+            List<ArtistDto> artists = artistDataSource.getAllArtists();
+            artists.sort(Comparator.comparing(ArtistDto::getName));
+
+            HashMap<String, Integer> filmId = new HashMap<String, Integer>();
+            for (FilmDto film : films) {
+                filmId.put(film.getName(), film.getId());
+            }
+
+            List<Pair<String, List<Integer>>> artistFilmPairs = new ArrayList<>();
+            for (ArtistDto artist : artists) {
+                ArrayList<Integer> artistFilms = new ArrayList<>();
+                for (String filmName : artist.getFilmNames()) {
+                    if (filmId.containsKey(filmName)) {
+                        artistFilms.add(filmId.get(filmName));
+                    }
+                }
+                artistFilmPairs.add(new Pair<>(artist.getName(), artistFilms));
+            }
+            indexDataSource.buildArtistNameIndex(artistFilmPairs);
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void buildArtistIdIndex() {
+        try {
+            List<FilmDto> films = filmDataSource.getAllFilms();
+            List<ArtistDto> artists = artistDataSource.getAllArtists();
+            artists.sort(Comparator.comparingInt(ArtistDto::getId));
+
+            HashMap<String, Integer> filmId = new HashMap<String, Integer>();
+            for (FilmDto film : films) {
+                filmId.put(film.getName(), film.getId());
+            }
+
+            List<Pair<Integer, List<Integer>>> artistFilmPairs = new ArrayList<>();
+            for (ArtistDto artist : artists) {
+                ArrayList<Integer> artistFilms = new ArrayList<>();
+                for (String filmName : artist.getFilmNames()) {
+                    if (filmId.containsKey(filmName)) {
+                        artistFilms.add(filmId.get(filmName));
+                    }
+                }
+                artistFilmPairs.add(new Pair<>(artist.getId(), artistFilms));
+            }
+            indexDataSource.buildArtistIdIndex(artistFilmPairs);
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static boolean isValid(ArtistDto artistToAdd) {

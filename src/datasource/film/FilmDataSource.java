@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 
 public class FilmDataSource extends BaseDataSource {
 
+    private FileHandler fileHandler;
+
     public FilmDataSource(FileHandler fileHandler) {
-        super(fileHandler);
+        this.fileHandler = fileHandler;
     }
 
     public void addFilm(FilmDto film) throws IOException {
@@ -56,5 +58,26 @@ public class FilmDataSource extends BaseDataSource {
                 .stream()
                 .map(FilmDtoMappers::mapRecordToFilmDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void initialize() {
+        try {
+            fileHandler.initialize();
+        } catch (FileSystemException e) {
+            System.err.println(">> Error while initializing new file source for films");
+        }
+    }
+
+    @Override
+    public void clearData() {
+        try {
+            fileHandler.clearFile();
+            System.out.println(String.format(">> Successfully cleared all data in %s", fileHandler.getFile().getName()));
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
