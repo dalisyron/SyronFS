@@ -7,6 +7,8 @@ import io.FileHandler;
 
 import java.io.IOException;
 import java.nio.file.FileSystemException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FilmDataSource extends BaseDataSource {
 
@@ -47,5 +49,12 @@ public class FilmDataSource extends BaseDataSource {
         fileHandler.deleteLine(String.format("%d", id), (record, key) ->
                 FilmDtoMappers.mapRecordToFilmDto(record).getId() == Integer.parseInt(key)
         );
+    }
+
+    public List<FilmDto> getAllFilms() throws IOException {
+        return fileHandler.getAllRecords()
+                .stream()
+                .map(FilmDtoMappers::mapRecordToFilmDto)
+                .collect(Collectors.toList());
     }
 }

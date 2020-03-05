@@ -8,6 +8,7 @@ import datasource.film.FilmDataSource;
 import datasource.film.mapper.FilmDtoMappers;
 import repository.entity.Artist;
 import repository.entity.Film;
+import repository.entity.FilmCasting;
 import repository.mapper.FilmEntityMappers;
 import repository.query.add.AddArtistQuery;
 import repository.query.add.AddFilmQuery;
@@ -16,10 +17,7 @@ import repository.query.update.UpdateFilmQuery;
 
 import java.io.IOException;
 import java.nio.file.FileSystemException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Repository {
@@ -266,6 +264,46 @@ public class Repository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<FilmCasting> getAllFilmCastings() {
+        try {
+            List<FilmDto> films = filmDataSource.getAllFilms();
+            List<ArtistDto> artists = artistDataSource.getAllArtists();
+            ArrayList<FilmCasting> result = new ArrayList<>();
+            HashMap<String, FilmDto> filmDtoMap = new HashMap<>();
+
+            for (FilmDto film : films) {
+                filmDtoMap.put(film.getName(), film);
+            }
+
+            HashMap<FilmDto, List<ArtistDto>> cast = new HashMap<>();
+
+            for (ArtistDto artist : artists) {
+                for (String film: artist.getFilmNames()) {
+                    if (filmDtoMap.containsKey(film)) {
+                        if (!cast.containsKey(filmDtoMap.get(film))) {
+                            cast.put(filmDtoMap.get(film), new ArrayList<>(Arrays.asList(artist)));
+                        } else {
+                            cast.get(filmDtoMap.get(film)).add(artist);
+                        }
+                    }
+                }
+            }
+
+            Iterator hmIterator = cast.entrySet().iterator();
+
+            while (hmIterator.hasNext()) {
+                Map.Entry<FilmDto, List<ArtistDto>> mapElement = (Map.Entry) hmIterator.next();
+                result.add(new FilmCasting(FilmEntityMappers.mapFilmDtoToFilmEntity(mapElement.getKey()), mapElement.getValue()));
+            }
+            return result;
+        } catch (FileSystemException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static boolean isValid(ArtistDto artistToAdd) {

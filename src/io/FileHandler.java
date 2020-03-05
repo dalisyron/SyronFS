@@ -6,6 +6,8 @@ import java.io.*;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
@@ -183,5 +185,21 @@ public class FileHandler {
 
     public File getFile() {
         return file;
+    }
+
+    public List<String> getAllRecords() throws IOException {
+        BufferedReader reader = retrieveBufferedReader();
+
+        String currentLine;
+
+        ArrayList<String> result = new ArrayList<>();
+
+        while((currentLine = reader.readLine()) != null) {
+            String trimmedLine = currentLine.trim();
+            result.add(trimmedLine);
+        }
+
+        reader.close();
+        return result;
     }
 }

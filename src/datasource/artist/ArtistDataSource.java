@@ -3,10 +3,14 @@ package datasource.artist;
 import datasource.artist.mapper.ArtistDtoMappers;
 import datasource.base.BaseDataSource;
 import datasource.dto.ArtistDto;
+import datasource.dto.FilmDto;
+import datasource.film.mapper.FilmDtoMappers;
 import io.FileHandler;
 
 import java.io.IOException;
 import java.nio.file.FileSystemException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArtistDataSource extends BaseDataSource {
 
@@ -52,5 +56,12 @@ public class ArtistDataSource extends BaseDataSource {
                 ArtistDtoMappers.mapRecordToArtistDto(record).getId() == Integer.parseInt(key)
         );
 
+    }
+
+    public List<ArtistDto> getAllArtists() throws IOException {
+        return fileHandler.getAllRecords()
+                .stream()
+                .map(ArtistDtoMappers::mapRecordToArtistDto)
+                .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,7 @@
+import datasource.dto.ArtistDto;
 import di.Injector;
 import repository.*;
+import repository.entity.FilmCasting;
 import repository.query.Query;
 import repository.query.add.AddArtistQuery;
 import repository.query.add.AddFilmQuery;
@@ -13,7 +15,9 @@ import repository.query.update.UpdateFilmQuery;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /*
 Sample test inputs:
@@ -67,11 +71,26 @@ public class SyronFS {
             String queryString = reader.readLine();
 
             try {
-                if (queryString.equals("clear")) {
+                if (queryString.equals("Clear")) {
                     repository.clear();
                     continue;
-                } else if (queryString.equals("exit")) {
+                } else if (queryString.equals("Exit")) {
                     break;
+                } else if (queryString.equals("FilmCastings")) {
+                    List<FilmCasting> castings = repository.getAllFilmCastings();
+
+                    System.out.println("Film castings: ");
+                    for (FilmCasting casting : castings) {
+                        System.out.println(
+                                String.format("%s/%s/%s/%d/%s", casting.getFilm().getName(),
+                                        casting.getArtists().stream().map(ArtistDto::getName).collect(Collectors.joining(",")),
+                                        casting.getFilm().getDirectorName(),
+                                        casting.getFilm().getProductionYear(),
+                                        casting.getFilm().getGenre()
+                                )
+                        );
+                    }
+                    continue;
                 }
                 Query query = Query.parseQuery(queryString);
 
