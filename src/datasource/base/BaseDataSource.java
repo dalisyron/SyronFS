@@ -24,7 +24,7 @@ public abstract class BaseDataSource {
     public void clearData() {
         try {
             fileHandler.clearFile();
-            System.out.println(">> Successfully cleared all data");
+            System.out.println(String.format(">> Successfully cleared all data in %s", fileHandler.getFile().getName()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {

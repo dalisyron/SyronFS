@@ -10,21 +10,12 @@ import java.nio.file.FileSystemException;
 
 public class ArtistDataSource extends BaseDataSource {
 
-    private FileHandler fileHandler;
-
     public ArtistDataSource(FileHandler fileHandler) {
         super(fileHandler);
     }
 
-    public void addArtist(ArtistDto artist) {
-        try {
-            fileHandler.appendLine(ArtistDtoMappers.mapArtistDtoToRecordFormat(artist));
-            System.out.println(String.format(">> Added artist %s successfully", artist.getName()));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void addArtist(ArtistDto artist) throws IOException {
+        fileHandler.appendLine(ArtistDtoMappers.mapArtistDtoToRecordFormat(artist));
     }
 
     public void updateArtist(int id, ArtistDto updatedArtist) {
@@ -71,16 +62,10 @@ public class ArtistDataSource extends BaseDataSource {
         }
     }
 
-    public void deleteArtist(int id) {
-        try {
-            fileHandler.deleteLine(String.format("%d", id), (record, key) ->
-                    ArtistDtoMappers.mapRecordToArtistDto(record).getId() == Integer.parseInt(key)
-            );
-            System.out.println(String.format(">> Deleted artist with id %d successfully", id));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void deleteArtist(int id) throws IOException {
+        fileHandler.deleteLine(String.format("%d", id), (record, key) ->
+                ArtistDtoMappers.mapRecordToArtistDto(record).getId() == Integer.parseInt(key)
+        );
+
     }
 }

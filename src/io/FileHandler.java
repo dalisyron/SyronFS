@@ -1,5 +1,7 @@
 package io;
 
+import repository.entity.Film;
+
 import java.io.*;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
@@ -177,5 +179,9 @@ public class FileHandler {
         if (!renameSuccessful) {
             throw new FileSystemException(String.format("Internal File System Error: Could not update the temporary %s file.", file.getName()));
         }
+    }
+
+    public File getFile() {
+        return file;
     }
 }

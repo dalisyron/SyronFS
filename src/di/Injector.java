@@ -14,31 +14,31 @@ public class Injector {
 
     }
 
-    File provideFilmFile() {
+    public File provideFilmFile() {
         return new File(AppConfig.FILM_PATH);
     }
 
-    FileHandler provideFilmFileHandler() {
+    public FileHandler provideFilmFileHandler() {
         return new FileHandler(provideFilmFile());
     }
 
-    FilmDataSource provideFilmDataSource() {
+    public FilmDataSource provideFilmDataSource() {
         return new FilmDataSource(provideFilmFileHandler());
     }
 
-    File provideArtistFile() {
+    public File provideArtistFile() {
         return new File(AppConfig.ARTIST_PATH);
     }
 
-    FileHandler provideArtistFileHandler() {
+    public FileHandler provideArtistFileHandler() {
         return new FileHandler(provideArtistFile());
     }
 
-    ArtistDataSource provideArtistDataSource() {
+    public ArtistDataSource provideArtistDataSource() {
         return new ArtistDataSource(provideArtistFileHandler());
     }
 
-    Repository provideRepository() {
+    public Repository provideRepository() {
         return new Repository(provideFilmDataSource(), provideArtistDataSource());
     }
 
