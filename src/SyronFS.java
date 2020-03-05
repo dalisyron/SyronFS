@@ -1,4 +1,7 @@
 import di.Injector;
+import repository.DuplicateElementIdException;
+import repository.IllegalFieldsException;
+import repository.NonExistingFilmException;
 import repository.Repository;
 import repository.query.Query;
 import repository.query.add.AddArtistQuery;
@@ -52,7 +55,6 @@ public class SyronFS {
 
         Repository repository = Injector.getInstance().provideRepository();
         repository.initialize();
-        repository.clear();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -61,12 +63,54 @@ public class SyronFS {
             String queryString = reader.readLine();
 
             try {
+                if (queryString.equals("clear")) {
+                    repository.clear();
+                    continue;
+                } else if (queryString.equals("exit")) {
+                    break;
+                }
                 Query query = Query.parseQuery(queryString);
 
                 if (query instanceof AddFilmQuery) {
-                    repository.addFilm((AddFilmQuery) query);
+                    try {
+                        repository.addFilm((AddFilmQuery) query);
+                    } catch (DuplicateElementIdException e) {
+                        String duplicateName = repository.findFilm(((AddFilmQuery) query).getFilmToAdd().getId()).getName();
+                        System.out.println(String.format(
+                                ">> Error: A film with the same ID (%d) was already in the file system (%s)",
+                                ((AddFilmQuery) query).getFilmToAdd().getId(), duplicateName
+                        ));
+                    } catch (IllegalFieldsException e) {
+                        System.out.println(">> Error: Invalid film info.");
+                    }
                 } else if (query instanceof AddArtistQuery) {
-                    repository.addArtist((AddArtistQuery) query);
+                    if (((AddArtistQuery) query).shouldCheckFilmsExist()) {
+                        try {
+                            repository.addArtistWithValidation((AddArtistQuery) query);
+                        } catch (DuplicateElementIdException e) {
+                            String duplicateName = repository.findArtistById(((AddArtistQuery) query).getArtistToAdd().getId()).getName();
+                            System.out.println(String.format(
+                                    ">> Error: An artist with the same ID (%d) was already in the file system (%s)",
+                                    ((AddArtistQuery) query).getArtistToAdd().getId(), duplicateName
+                            ));
+                        } catch (NonExistingFilmException e) {
+                            System.out.println(">> Error: Non existing films were found in the artist's films list.");
+                        } catch (IllegalFieldsException e) {
+                            System.out.println(">> Error: Invalid film info.");
+                        }
+                    } else {
+                        try {
+                            repository.addArtist((AddArtistQuery) query);
+                        } catch (DuplicateElementIdException e) {
+                            String duplicateName = repository.findArtistById(((AddArtistQuery) query).getArtistToAdd().getId()).getName();
+                            System.out.println(String.format(
+                                    ">> Error: An artist with the same ID (%d) was already in the file system (%s)",
+                                    ((AddArtistQuery) query).getArtistToAdd().getId(), duplicateName
+                            ));
+                        } catch (IllegalFieldsException e) {
+                            System.out.println(">> Error: Invalid film info.");
+                        }
+                    }
                 } else if (query instanceof FindFilmByIdQuery) {
                     try {
                         repository.findFilm(((FindFilmByIdQuery) query).getFilmId());
@@ -117,7 +161,7 @@ public class SyronFS {
                     }
                 }
             } catch (IllegalArgumentException e) {
-                System.err.println(">> Error: Invalid Query.");
+                System.out.println(">> Error: Invalid Query.");
             }
         }
     }

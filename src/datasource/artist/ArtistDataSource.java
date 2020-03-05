@@ -24,7 +24,6 @@ public class ArtistDataSource extends BaseDataSource {
                 ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
                 return artist.getId() == Integer.parseInt(key);
             });
-            System.out.println(String.format(">> Updated artist %d successfully", id));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
@@ -32,34 +31,20 @@ public class ArtistDataSource extends BaseDataSource {
         }
     }
 
-    public void findArtistByName(String name) {
-        try {
-            String result = fileHandler.findLine(name, (record, key) -> {
-                ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
-                return artist.getName().equals(key);
-            });
-            ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(result);
-            System.out.println(String.format(">> Found artist named %s with id %d", name, artist.getId()));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ArtistDto findArtistByName(String name) throws IOException {
+        String result = fileHandler.findLine(name, (record, key) -> {
+            ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
+            return artist.getName().equals(name);
+        });
+        return ArtistDtoMappers.mapRecordToArtistDto(result);
     }
 
-    public void findArtistById(int id) {
-        try {
-            String result = fileHandler.findLine(String.format("%d", id), (record, key) -> {
-                ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
-                return artist.getId() == Integer.parseInt(key);
-            });
-            ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(result);
-            System.out.println(String.format(">> Found artist named %s with id %d", artist.getName(), id));
-        } catch (FileSystemException e) {
-            System.err.println(e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ArtistDto findArtistById(int id) throws IOException {
+        String result = fileHandler.findLine(String.format("%d", id), (record, key) -> {
+            ArtistDto artist = ArtistDtoMappers.mapRecordToArtistDto(record);
+            return artist.getId() == Integer.parseInt(key);
+        });
+        return ArtistDtoMappers.mapRecordToArtistDto(result);
     }
 
     public void deleteArtist(int id) throws IOException {

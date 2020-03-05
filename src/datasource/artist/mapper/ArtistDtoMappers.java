@@ -11,7 +11,7 @@ public class ArtistDtoMappers {
     public static String mapArtistDtoToRecordFormat(ArtistDto artistDto) {
         return "$%d-" + artistDto.getId() + "/" + artistDto.getName() +
                 "/" + artistDto.getAge() + "/" +
-                artistDto.getFilmNames();
+                String.join(",", artistDto.getFilmNames());
     }
 
     public static ArtistDto mapRecordToArtistDto(String record) {

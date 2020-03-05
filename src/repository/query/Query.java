@@ -116,6 +116,14 @@ public abstract class Query {
     }
 
     private static AddArtistQuery parseAddArtistQuery(String queryString) {
+
+        boolean checkFilmsExist = false;
+        String[] allWords = queryString.split(Pattern.quote(" "));
+        if (allWords[allWords.length - 1].equals("-checkFilmsExist")) {
+            checkFilmsExist = true;
+            queryString = queryString.replaceFirst(Pattern.quote("-checkFilmsExist"), "");
+        }
+
         String[] wordList = queryString.split(Pattern.quote(" "));
 
         String update = queryString.replaceFirst(Pattern.quote("Add "), "");
@@ -143,7 +151,7 @@ public abstract class Query {
             films.add(values[i]);
         }
 
-        return new AddArtistQuery(new ArtistDto(id, name, age, films));
+        return new AddArtistQuery(new ArtistDto(id, name, age, films), checkFilmsExist);
     }
 
     private static AddFilmQuery parseAddFilmQuery(String queryString) {
