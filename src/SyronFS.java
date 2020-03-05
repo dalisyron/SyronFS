@@ -21,8 +21,10 @@ import java.util.NoSuchElementException;
 /*
 Sample test inputs:
 
+clear
+
 _Add Film Query_
-Add FilmID: 1123 , FilmName: The Salesman , DirectorName: Asghar Farhadi , ProductionYear: 2016 , Genre: Drama
+Add FilmID: 1123 , FilmNat e: The Salesman , DirectorName: Asghar Farhadi , ProductionYear: 2016 , Genre: Drama
 
 _Add Artist Query_
 Add ArtistID: 2243 , ArtistName: Shahab Hosseini , Age: 46 , ArtistFilms: The Salesman,About Elly,A Separation
@@ -44,6 +46,8 @@ Update Artist Shahab Hosseini Set Age to 47
 
 _Update Film_
 Update Film The Salesman Set Genre to Thriller
+
+exit
  */
 public class SyronFS {
 
