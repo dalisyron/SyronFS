@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 public class SyronFS {
 
     Repository repository = Injector.getInstance().provideRepository();
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     public SyronFS() {
     }
@@ -37,6 +39,7 @@ public class SyronFS {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
+        System.out.println(ANSI_GREEN + "SyronFS 1.0 \nEnter your queries below. Try adding some films!" + ANSI_RESET);
         while (true) {
             System.out.print(">> ");
             String queryString = reader.readLine();
