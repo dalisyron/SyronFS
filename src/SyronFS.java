@@ -21,40 +21,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-/*
-Sample test inputs:
-
-clear
-
-_Add Film Query_
-Add FilmID: 1123 , FilmNat e: The Salesman , DirectorName: Asghar Farhadi , ProductionYear: 2016 , Genre: Drama
-
-_Add Artist Query_
-Add ArtistID: 2243 , ArtistName: Shahab Hosseini , Age: 46 , ArtistFilms: The Salesman,About Elly,A Separation
-
-_Add Artist Query With Film Validation_
-Add ArtistID: 2243 , ArtistName: Shahab Hosseini , Age: 46 , ArtistFilms: The Salesman,About Elly,A Separation -checkFilmsExist
-
-_Find Film By FilmID_
-Find Film 1123 By FilmID
-
-_Find Film By FilmName_
-Find Film The Salesman By FilmName
-
-_Remove Artist By ID_
-Remove ArtistID 10
-
-_Remove Film By ID_
-Remove FilmID 20
-
-_Update Artist_
-Update Artist Shahab Hosseini Set Age to 47
-
-_Update Film_
-Update Film The Salesman Set Genre to Thriller
-
-exit
- */
 public class SyronFS {
 
     public static void main(String[] args) throws IOException {
