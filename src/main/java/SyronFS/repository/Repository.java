@@ -82,7 +82,6 @@ public class Repository {
                 throw new DuplicateElementIdException();
             }
             artistDataSource.addArtist(query.getArtistToAdd());
-            System.out.println(String.format(">> Repository: Added artist %s successfully", query.getArtistToAdd().getName()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
@@ -262,7 +261,6 @@ public class Repository {
                 }
             }
             artistDataSource.addArtist(query.getArtistToAdd());
-            System.out.println(String.format(">> Repository: Added artist %s successfully", query.getArtistToAdd().getName()));
         } catch (FileSystemException e) {
             System.err.println(e.getMessage());
         } catch (IOException e) {
