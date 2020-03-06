@@ -37,6 +37,7 @@ public class Repository {
     public void initialize() {
         filmDataSource.initialize();
         artistDataSource.initialize();
+        indexDataSource.initialize();
     }
 
     public void clear() {
